@@ -5,10 +5,10 @@ import org.springframework.modulith.core.ApplicationModules;
 
 class ModulithTest {
 
-    ApplicationModules modules = ApplicationModules.of(HabitTrackerApplication.class);
+  ApplicationModules modules = ApplicationModules.of(HabitTrackerApplication.class);
 
-    @Test
-    void shouldBeCompliant() {
-        modules.verify();
-    }
+  @Test
+  void shouldBeCompliant() {
+    modules.verify();
+  }
 }

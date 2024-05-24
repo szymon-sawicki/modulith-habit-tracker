@@ -7,6 +7,7 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface HabitExecutionMapper {
-    HabitExecutionDTO toDto(HabitExecutionEntity entity);
-    HabitExecutionEntity toEntity(HabitExecutionDTO goalDTO);
+  HabitExecutionDTO toDto(HabitExecutionEntity entity);
+
+  HabitExecutionEntity toEntity(HabitExecutionDTO goalDTO);
 }
