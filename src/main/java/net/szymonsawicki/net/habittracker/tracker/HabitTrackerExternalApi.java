@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface HabitTrackerExternalApi {
   List<HabitExecutionDTO> findAllExecutionsByHabitId(long habitId);
+
   List<HabitExecutionDTO> findAllExecutionsByUserId(long userId);
-  HabitExecutionDTO addHabitExectution(HabitExecutionDTO habitExecution);
+
+  HabitExecutionDTO addHabitExecution(HabitExecutionDTO habitExecution);
 }

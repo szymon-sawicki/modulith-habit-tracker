@@ -4,18 +4,21 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
 import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
+import net.szymonsawicki.net.habittracker.tracker.HabitTrackerInternalApi;
 import net.szymonsawicki.net.habittracker.user.UserDTO;
 import net.szymonsawicki.net.habittracker.user.UserExternalAPI;
 import net.szymonsawicki.net.habittracker.user.UserInternalAPI;
 import net.szymonsawicki.net.habittracker.user.mapper.UserMapper;
 import net.szymonsawicki.net.habittracker.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserInternalAPI, UserExternalAPI {
   private HabitInternalAPI habitInternalAPI;
   private GoalInternalAPI goalInternalAPI;
+  private HabitTrackerInternalApi habitTrackerInternalApi;
   private UserRepository userRepository;
   private UserMapper userMapper;
 
@@ -26,17 +29,35 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
   }
 
   @Override
+  @Transactional
   public UserDTO findByIdWithGoalsAndHabits(long userId) {
-    var user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new EntityNotFoundException("User can't be found"));
-    var userGoals = goalInternalAPI.findGoalsForUser(userId);
-    return null;
+    var userFromDb =
+        userMapper.toDto(
+            userRepository
+                .findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User can't be found")));
+
+    userFromDb.goals().addAll(goalInternalAPI.findGoalsForUser(userId));
+
+    return userFromDb;
   }
 
   @Override
   public UserDTO findById(long userId) {
-    return null;
+    var userFromDb =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException("User can't be found"));
+    return userMapper.toDto(userFromDb);
+  }
+
+  @Override
+  @Transactional
+  public UserDTO deleteWithRelatedData(long userId) {
+    var userFromDb = findById(userId);
+    goalInternalAPI.deleteGoalsForUser(userId);
+    habitInternalAPI.deleteHabitsForUser(userId);
+    habitTrackerInternalApi.deleteTrackingsForUser(userId);
+    return userFromDb;
   }
 }
