@@ -2,6 +2,7 @@ package net.szymonsawicki.net.habittracker.goal.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.goal.GoalDTO;
 import net.szymonsawicki.net.habittracker.goal.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
@@ -12,10 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   private GoalMapper goalMapper;
   private GoalRepository goalRepository;
   private HabitInternalAPI habitInternalAPI;
+
+  public GoalService(
+      GoalMapper goalMapper, GoalRepository goalRepository, HabitInternalAPI habitInternalAPI) {
+    this.goalMapper = goalMapper;
+    this.goalRepository = goalRepository;
+    this.habitInternalAPI = habitInternalAPI;
+  }
 
   @Override
   public GoalDTO findGoalWithHabits(long goalId) {
@@ -34,12 +43,19 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   @Override
   public List<GoalDTO> findGoalsForUser(long userId) {
 
-    var goalsForUser = goalRepository.findByUserId(userId);
+    var goalsForUser = goalMapper.toDtos(goalRepository.findByUserId(userId));
 
     goalsForUser.forEach(
         goal -> goal.habits().addAll(habitInternalAPI.findAllHabitsForGoal(goal.id())));
 
     return goalsForUser;
+  }
+
+  @Override
+  public GoalDTO addGoal(GoalDTO goalDTO) {
+    var addedGoal = goalRepository.save(goalMapper.toEntity(goalDTO));
+    log.info(String.format("Added goal: %s", addedGoal));
+    return goalMapper.toDto(addedGoal);
   }
 
   @Override

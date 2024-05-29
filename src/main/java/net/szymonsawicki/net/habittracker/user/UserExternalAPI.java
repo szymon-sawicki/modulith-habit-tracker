@@ -1,7 +1,7 @@
 package net.szymonsawicki.net.habittracker.user;
 
 public interface UserExternalAPI {
-  UserDTO add(UserDTO user);
+  UserDTO addUser(UserDTO user);
 
   UserDTO deleteWithRelatedData(long userId);
 

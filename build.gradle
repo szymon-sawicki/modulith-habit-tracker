@@ -42,6 +42,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.modulith:spring-modulith-starter-core'
     implementation 'org.springframework.modulith:spring-modulith-starter-jpa'
+    implementation'org.zalando:logbook-spring-boot-starter:3.5.0'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
@@ -49,6 +50,7 @@ dependencies {
     runtimeOnly 'org.springframework.modulith:spring-modulith-actuator'
     runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
 }
@@ -58,6 +60,12 @@ dependencyManagement {
         mavenBom "org.springframework.modulith:spring-modulith-bom:${springModulithVersion}"
     }
 }
+
+compileJava {
+    options.compilerArgs << '-Amapstruct.defaultComponentModel=spring'
+}
+
+
 
 tasks.named('test') {
     useJUnitPlatform()

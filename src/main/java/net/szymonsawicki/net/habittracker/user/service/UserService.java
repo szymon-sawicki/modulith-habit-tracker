@@ -1,7 +1,7 @@
 package net.szymonsawicki.net.habittracker.user.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
 import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerInternalApi;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class UserService implements UserInternalAPI, UserExternalAPI {
   private HabitInternalAPI habitInternalAPI;
   private GoalInternalAPI goalInternalAPI;
@@ -22,10 +22,27 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
   private UserRepository userRepository;
   private UserMapper userMapper;
 
+  public UserService(
+      HabitInternalAPI habitInternalAPI,
+      GoalInternalAPI goalInternalAPI,
+      HabitTrackerInternalApi habitTrackerInternalApi,
+      UserRepository userRepository,
+      UserMapper userMapper) {
+    this.habitInternalAPI = habitInternalAPI;
+    this.goalInternalAPI = goalInternalAPI;
+    this.habitTrackerInternalApi = habitTrackerInternalApi;
+    this.userRepository = userRepository;
+    this.userMapper = userMapper;
+  }
+
   @Override
-  public UserDTO add(UserDTO user) {
+  public UserDTO addUser(UserDTO user) {
+
     var userEntity = userMapper.toEntity(user);
-    return userMapper.toDto(userRepository.save(userEntity));
+    var addedUser = userRepository.save(userEntity);
+    log.info(String.format("Added user: %s", addedUser));
+
+    return userMapper.toDto(userEntity);
   }
 
   @Override

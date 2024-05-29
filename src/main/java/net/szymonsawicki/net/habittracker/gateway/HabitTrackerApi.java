@@ -1,7 +1,11 @@
 package net.szymonsawicki.net.habittracker.gateway;
 
+import lombok.RequiredArgsConstructor;
+import net.szymonsawicki.net.habittracker.goal.GoalDTO;
 import net.szymonsawicki.net.habittracker.goal.GoalExternalAPI;
+import net.szymonsawicki.net.habittracker.habit.HabitDTO;
 import net.szymonsawicki.net.habittracker.habit.HabitExternalAPI;
+import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.user.UserDTO;
 import net.szymonsawicki.net.habittracker.user.UserExternalAPI;
@@ -9,19 +13,40 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class HabitTrackerApi {
   private GoalExternalAPI goalExternalAPI;
   private HabitExternalAPI habitExternalAPI;
   private HabitTrackerExternalApi habitTrackerExternalApi;
   private UserExternalAPI userExternalAPI;
 
-  @GetMapping("/{userId}")
-  private UserDTO findUser(@PathVariable("userId") long userId) {
+  @GetMapping("user/{userId}")
+  public UserDTO findUser(@PathVariable("userId") long userId) {
     return userExternalAPI.findByIdWithGoalsAndHabits(userId);
   }
 
-  @DeleteMapping("/{userId}")
-  private UserDTO deleteUser(@PathVariable("userId") long userId) {
+  @DeleteMapping("user/{userId}")
+  public UserDTO deleteUser(@PathVariable("userId") long userId) {
     return userExternalAPI.deleteWithRelatedData(userId);
+  }
+
+  @PostMapping("/user")
+  public UserDTO addUser(@RequestBody UserDTO userDTO) {
+    return userExternalAPI.addUser(userDTO);
+  }
+
+  @PostMapping("/habit")
+  public HabitDTO addHabit(@RequestBody HabitDTO habit) {
+    return habitExternalAPI.addHabit(habit);
+  }
+
+  @PostMapping("/goal")
+  public GoalDTO addHabitExecution(@RequestBody GoalDTO goalDTO) {
+    return goalExternalAPI.addGoal(goalDTO);
+  }
+
+  @PostMapping("/habit-execution")
+  public HabitExecutionDTO addHabitExecution(@RequestBody HabitExecutionDTO habitExecutionDTO) {
+    return habitTrackerExternalApi.addHabitExecution(habitExecutionDTO);
   }
 }

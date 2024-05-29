@@ -1,5 +1,6 @@
 package net.szymonsawicki.net.habittracker.habit.mapper;
 
+import java.util.List;
 import net.szymonsawicki.net.habittracker.habit.HabitDTO;
 import net.szymonsawicki.net.habittracker.habit.model.HabitEntity;
 import org.mapstruct.Mapper;
@@ -10,4 +11,8 @@ public interface HabitMapper {
   HabitDTO toDto(HabitEntity entity);
 
   HabitEntity toEntity(HabitDTO goalDTO);
+
+  List<HabitDTO> toDtos(List<HabitEntity> entities);
+
+  List<HabitEntity> toEntities(List<HabitDTO> dtos);
 }
