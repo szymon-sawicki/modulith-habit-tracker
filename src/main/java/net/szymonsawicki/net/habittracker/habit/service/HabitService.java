@@ -1,5 +1,6 @@
 package net.szymonsawicki.net.habittracker.habit.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.habit.HabitDTO;
@@ -39,6 +40,17 @@ public class HabitService implements HabitExternalAPI, HabitInternalAPI {
 
   @Override
   public List<HabitDTO> findAllHabitsForUser(long userId) {
-    return List.of();
+    return habitMapper.toDtos(habitRepository.findAllByUserId(userId));
+  }
+
+  @Override
+  public HabitDTO findById(long habitId) {
+
+    var habit =
+        habitRepository
+            .findById(habitId)
+            .orElseThrow(() -> new EntityNotFoundException("Goal can't be found"));
+
+    return habitMapper.toDto(habit);
   }
 }
