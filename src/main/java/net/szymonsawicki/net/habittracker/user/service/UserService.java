@@ -10,6 +10,9 @@ import net.szymonsawicki.net.habittracker.user.UserExternalAPI;
 import net.szymonsawicki.net.habittracker.user.UserInternalAPI;
 import net.szymonsawicki.net.habittracker.user.mapper.UserMapper;
 import net.szymonsawicki.net.habittracker.user.repository.UserRepository;
+import net.szymonsawicki.net.habittracker.user.service.exception.UserServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,18 +28,26 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
   public UserService(
       HabitInternalAPI habitInternalAPI,
       GoalInternalAPI goalInternalAPI,
-      HabitTrackerInternalApi habitTrackerInternalApi,
       UserRepository userRepository,
       UserMapper userMapper) {
     this.habitInternalAPI = habitInternalAPI;
     this.goalInternalAPI = goalInternalAPI;
-    this.habitTrackerInternalApi = habitTrackerInternalApi;
     this.userRepository = userRepository;
     this.userMapper = userMapper;
   }
 
+  @Autowired
+  @Lazy
+  public void setHabitTrackerInternalApi(HabitTrackerInternalApi habitTrackerInternalApi) {
+    this.habitTrackerInternalApi = habitTrackerInternalApi;
+  }
+
   @Override
   public UserDTO addUser(UserDTO user) {
+
+    if (userRepository.existsByUsername(user.username())) {
+      throw new UserServiceException("User with given username already exists");
+    }
 
     var userEntity = userMapper.toEntity(user);
     var addedUser = userRepository.save(userEntity);
@@ -54,7 +65,11 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
                 .findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User can't be found")));
 
-    userFromDb.goals().addAll(goalInternalAPI.findGoalsForUser(userId));
+    var goalsForUser = goalInternalAPI.findGoalsForUser(userId);
+
+    if (!goalsForUser.isEmpty()) {
+      userFromDb.goals().addAll(goalsForUser);
+    }
 
     return userFromDb;
   }
@@ -66,6 +81,14 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
             .findById(userId)
             .orElseThrow(() -> new EntityNotFoundException("User can't be found"));
     return userMapper.toDto(userFromDb);
+  }
+
+  @Override
+  public boolean existsById(long userId) {
+    if (!userRepository.existsById(userId)) {
+      throw new EntityNotFoundException("User can't be found");
+    }
+    return true;
   }
 
   @Override

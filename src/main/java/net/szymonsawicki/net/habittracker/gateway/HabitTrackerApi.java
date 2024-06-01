@@ -1,7 +1,6 @@
 package net.szymonsawicki.net.habittracker.gateway;
 
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import net.szymonsawicki.net.habittracker.goal.GoalDTO;
 import net.szymonsawicki.net.habittracker.goal.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.habit.HabitDTO;
@@ -14,12 +13,22 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class HabitTrackerApi {
   private GoalExternalAPI goalExternalAPI;
   private HabitExternalAPI habitExternalAPI;
   private HabitTrackerExternalApi habitTrackerExternalApi;
   private UserExternalAPI userExternalAPI;
+
+  public HabitTrackerApi(
+      GoalExternalAPI goalExternalAPI,
+      HabitExternalAPI habitExternalAPI,
+      HabitTrackerExternalApi habitTrackerExternalApi,
+      UserExternalAPI userExternalAPI) {
+    this.goalExternalAPI = goalExternalAPI;
+    this.habitExternalAPI = habitExternalAPI;
+    this.habitTrackerExternalApi = habitTrackerExternalApi;
+    this.userExternalAPI = userExternalAPI;
+  }
 
   @GetMapping("user/{userId}")
   public UserDTO findUser(@PathVariable("userId") long userId) {
@@ -31,7 +40,7 @@ public class HabitTrackerApi {
     return habitExternalAPI.findAllHabitsForUser(userId);
   }
 
-  @GetMapping("habit/user/{goalId}")
+  @GetMapping("habit/goal/{goalId}")
   public List<HabitDTO> findAllHabitsForGoal(@PathVariable("goalId") long goalId) {
     return habitExternalAPI.findAllHabitsForGoal(goalId);
   }

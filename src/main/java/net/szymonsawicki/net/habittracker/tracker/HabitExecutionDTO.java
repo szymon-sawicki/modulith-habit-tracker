@@ -1,11 +1,13 @@
 package net.szymonsawicki.net.habittracker.tracker;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public record HabitExecutionDTO(
     Long id,
     Long habitId,
     Long userId,
-    Integer durationMin,
+    Integer durationMins,
     String comment,
-    LocalDateTime executionTimestamp) {}
+    LocalDate executionDate,
+    LocalTime executionTime) {}

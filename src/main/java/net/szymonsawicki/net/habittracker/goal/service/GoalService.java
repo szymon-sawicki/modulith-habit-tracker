@@ -35,7 +35,11 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
 
     var goalDto = goalMapper.toDto(goal);
 
-    goalDto.habits().addAll(habitInternalAPI.findAllHabitsForGoal(goalId));
+    var habitsForGoal = habitInternalAPI.findAllHabitsForGoal(goalId);
+
+    if (!habitsForGoal.isEmpty()) {
+      goalDto.habits().addAll(habitsForGoal);
+    }
 
     return goalDto;
   }
@@ -54,7 +58,13 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   @Override
   public GoalDTO addGoal(GoalDTO goalDTO) {
     var addedGoal = goalRepository.save(goalMapper.toEntity(goalDTO));
+
+    if (!goalDTO.habits().isEmpty()) {
+      var savedHabits = habitInternalAPI.saveHabits(goalDTO.habits());
+    }
+
     log.info(String.format("Added goal: %s", addedGoal));
+
     return goalMapper.toDto(addedGoal);
   }
 

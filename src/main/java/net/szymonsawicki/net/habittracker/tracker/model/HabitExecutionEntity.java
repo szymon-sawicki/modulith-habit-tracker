@@ -1,7 +1,8 @@
 package net.szymonsawicki.net.habittracker.tracker.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,5 +22,14 @@ public class HabitExecutionEntity {
   private Long userId;
   private Integer durationMins;
   private String comment;
-  private LocalDateTime executionTimestamp;
+
+  @Temporal(TemporalType.DATE)
+  private LocalDate executionDate;
+
+  @Temporal(TemporalType.TIME)
+  private LocalTime executionTime;
+
+  public LocalTime getEndTime() {
+    return executionTime.plusMinutes(durationMins);
+  }
 }

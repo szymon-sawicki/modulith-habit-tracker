@@ -10,4 +10,8 @@ public interface HabitInternalAPI {
   List<HabitDTO> findAllHabitsForUser(long userId);
 
   List<HabitDTO> findAllHabitsForGoal(long goalId);
+
+  List<HabitDTO> saveHabits(List<HabitDTO> habits);
+
+  boolean existsById(long habitId);
 }
