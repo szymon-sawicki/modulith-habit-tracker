@@ -55,7 +55,6 @@ public class HabitExecutionService implements HabitTrackerExternalApi, HabitTrac
 
     userInternalAPI.existsById(habitExecution.userId());
     habitInternalAPI.existsById(habitExecution.habitId());
-
     var entityToInsert = habitExecutionMapper.toEntity(habitExecution);
 
     if (isAnyExecutionOverlapping(entityToInsert)) {
@@ -63,7 +62,6 @@ public class HabitExecutionService implements HabitTrackerExternalApi, HabitTrac
     }
 
     var addedExecution = habitExecutionRepository.save(entityToInsert);
-
     log.info(String.format("Added habit execution: %s", addedExecution));
 
     return habitExecutionMapper.toDto(addedExecution);

@@ -1,6 +1,7 @@
 package net.szymonsawicki.net.habittracker.user.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
 import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
@@ -40,6 +41,11 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
   @Lazy
   public void setHabitTrackerInternalApi(HabitTrackerInternalApi habitTrackerInternalApi) {
     this.habitTrackerInternalApi = habitTrackerInternalApi;
+  }
+
+  @Override
+  public List<UserDTO> findAllUsers() {
+    return userMapper.toDtos(userRepository.findAll());
   }
 
   @Override
@@ -93,11 +99,11 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
 
   @Override
   @Transactional
-  public UserDTO deleteWithRelatedData(long userId) {
-    var userFromDb = findById(userId);
+  public long deleteWithRelatedData(long userId) {
+    existsById(userId);
     goalInternalAPI.deleteGoalsForUser(userId);
     habitInternalAPI.deleteHabitsForUser(userId);
     habitTrackerInternalApi.deleteTrackingsForUser(userId);
-    return userFromDb;
+    return userId;
   }
 }

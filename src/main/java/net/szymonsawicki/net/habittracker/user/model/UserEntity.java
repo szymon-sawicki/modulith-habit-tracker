@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.szymonsawicki.net.habittracker.user.type.UserType;
+import net.szymonsawicki.net.habittracker.user.UserType;
 
 @Entity
 @Table(name = "users")

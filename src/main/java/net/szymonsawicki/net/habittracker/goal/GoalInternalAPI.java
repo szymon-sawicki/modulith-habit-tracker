@@ -8,4 +8,6 @@ public interface GoalInternalAPI {
   void deleteGoalsForUser(long userId);
 
   List<GoalDTO> findGoalsForUser(long userId);
+
+  boolean existsByGoalId(long goalId);
 }

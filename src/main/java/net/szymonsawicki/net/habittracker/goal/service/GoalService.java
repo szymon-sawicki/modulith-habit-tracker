@@ -9,6 +9,9 @@ import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
 import net.szymonsawicki.net.habittracker.goal.mapper.GoalMapper;
 import net.szymonsawicki.net.habittracker.goal.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
+import net.szymonsawicki.net.habittracker.user.UserInternalAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +20,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   private GoalMapper goalMapper;
   private GoalRepository goalRepository;
+
+  // TODO remove this two dependencies by usage of events
   private HabitInternalAPI habitInternalAPI;
+  private UserInternalAPI userInternalAPI;
+
+  @Autowired
+  @Lazy
+  public void setUserInternalAPI(UserInternalAPI userInternalAPI) {
+    this.userInternalAPI = userInternalAPI;
+  }
 
   public GoalService(
       GoalMapper goalMapper, GoalRepository goalRepository, HabitInternalAPI habitInternalAPI) {
     this.goalMapper = goalMapper;
     this.goalRepository = goalRepository;
     this.habitInternalAPI = habitInternalAPI;
+  }
+
+  @Override
+  public boolean existsByGoalId(long goalId) {
+    if (!goalRepository.existsById(goalId))
+      throw new EntityNotFoundException("Goal with id " + goalId + " does not exist");
+    return true;
   }
 
   @Override
@@ -46,6 +65,8 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
 
   @Override
   public List<GoalDTO> findGoalsForUser(long userId) {
+
+    userInternalAPI.existsById(userId);
 
     var goalsForUser = goalMapper.toDtos(goalRepository.findByUserId(userId));
 

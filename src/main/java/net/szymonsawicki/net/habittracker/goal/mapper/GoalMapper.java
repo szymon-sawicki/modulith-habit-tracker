@@ -9,10 +9,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface GoalMapper {
   GoalDTO toDto(GoalEntity entity);
-
   GoalEntity toEntity(GoalDTO goalDTO);
-
   List<GoalDTO> toDtos(List<GoalEntity> entities);
-
   List<GoalEntity> toEntities(List<GoalDTO> dtos);
 }

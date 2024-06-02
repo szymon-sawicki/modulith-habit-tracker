@@ -41,46 +41,44 @@ public class HabitService implements HabitExternalAPI, HabitInternalAPI {
   }
 
   @Override
+  public List<HabitDTO> findAllHabitsForGoal(long goalId) {
+    return habitMapper.toDtos(habitRepository.findAllByGoalId(goalId));
+  }
+
+  @Override
   public HabitDTO addHabit(HabitDTO habit) {
     userInternalAPI.existsById(habit.userId());
+    goalInternalAPI.existsByGoalId(habit.goalId());
     var savedHabit = habitRepository.save(habitMapper.toEntity(habit));
     log.info(String.format("Added habit: %s", savedHabit));
     return habitMapper.toDto(savedHabit);
   }
 
   @Override
-  public List<HabitDTO> findAllHabitsForGoal(long goalId) {
-    return habitMapper.toDtos(habitRepository.findAllByGoalId(goalId));
-  }
-
-  @Override
   public void deleteHabitsForUser(long userId) {
+    userInternalAPI.existsById(userId);
     habitRepository.deleteAllByUserId(userId);
   }
 
   @Override
   public List<HabitDTO> findAllHabitsForUser(long userId) {
+    userInternalAPI.existsById(userId);
     return habitMapper.toDtos(habitRepository.findAllByUserId(userId));
   }
 
   @Override
   public HabitDTO findById(long habitId) {
-
     var habit =
         habitRepository
             .findById(habitId)
             .orElseThrow(() -> new EntityNotFoundException("Goal can't be found"));
-
     return habitMapper.toDto(habit);
   }
 
   @Override
   public List<HabitDTO> saveHabits(List<HabitDTO> habits) {
-
     var savedHabits = habitRepository.saveAll(habitMapper.toEntities(habits));
-
     log.info(String.format("Added habits: %s", savedHabits));
-
     return habitMapper.toDtos((List<HabitEntity>) savedHabits);
   }
 

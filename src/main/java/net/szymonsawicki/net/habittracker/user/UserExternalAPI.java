@@ -1,9 +1,13 @@
 package net.szymonsawicki.net.habittracker.user;
 
+import java.util.List;
+
 public interface UserExternalAPI {
+  List<UserDTO> findAllUsers();
+
   UserDTO addUser(UserDTO user);
 
-  UserDTO deleteWithRelatedData(long userId);
+  long deleteWithRelatedData(long userId);
 
   UserDTO findByIdWithGoalsAndHabits(long id);
 }

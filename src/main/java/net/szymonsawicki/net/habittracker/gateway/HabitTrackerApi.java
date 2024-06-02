@@ -30,6 +30,11 @@ public class HabitTrackerApi {
     this.userExternalAPI = userExternalAPI;
   }
 
+  @GetMapping("user/")
+  public List<UserDTO> findAllUsers() {
+    return userExternalAPI.findAllUsers();
+  }
+
   @GetMapping("user/{userId}")
   public UserDTO findUser(@PathVariable("userId") long userId) {
     return userExternalAPI.findByIdWithGoalsAndHabits(userId);
@@ -46,7 +51,7 @@ public class HabitTrackerApi {
   }
 
   @DeleteMapping("user/{userId}")
-  public UserDTO deleteUser(@PathVariable("userId") long userId) {
+  public long deleteUser(@PathVariable("userId") long userId) {
     return userExternalAPI.deleteWithRelatedData(userId);
   }
 
