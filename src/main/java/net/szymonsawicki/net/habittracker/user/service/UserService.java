@@ -2,46 +2,30 @@ package net.szymonsawicki.net.habittracker.user.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.szymonsawicki.net.habittracker.UserDeleteEvent;
+import net.szymonsawicki.net.habittracker.UserExistsEvent;
 import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
-import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
-import net.szymonsawicki.net.habittracker.tracker.HabitTrackerInternalApi;
 import net.szymonsawicki.net.habittracker.user.UserDTO;
 import net.szymonsawicki.net.habittracker.user.UserExternalAPI;
 import net.szymonsawicki.net.habittracker.user.UserInternalAPI;
 import net.szymonsawicki.net.habittracker.user.mapper.UserMapper;
 import net.szymonsawicki.net.habittracker.user.repository.UserRepository;
 import net.szymonsawicki.net.habittracker.user.service.exception.UserServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService implements UserInternalAPI, UserExternalAPI {
-  private HabitInternalAPI habitInternalAPI;
-  private GoalInternalAPI goalInternalAPI;
-  private HabitTrackerInternalApi habitTrackerInternalApi;
-  private UserRepository userRepository;
-  private UserMapper userMapper;
-
-  public UserService(
-      HabitInternalAPI habitInternalAPI,
-      GoalInternalAPI goalInternalAPI,
-      UserRepository userRepository,
-      UserMapper userMapper) {
-    this.habitInternalAPI = habitInternalAPI;
-    this.goalInternalAPI = goalInternalAPI;
-    this.userRepository = userRepository;
-    this.userMapper = userMapper;
-  }
-
-  @Autowired
-  @Lazy
-  public void setHabitTrackerInternalApi(HabitTrackerInternalApi habitTrackerInternalApi) {
-    this.habitTrackerInternalApi = habitTrackerInternalApi;
-  }
+  private final ApplicationEventPublisher events;
+  private final GoalInternalAPI goalInternalAPI;
+  private final UserRepository userRepository;
+  private final UserMapper userMapper;
 
   @Override
   public List<UserDTO> findAllUsers() {
@@ -49,6 +33,7 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
   }
 
   @Override
+  @Transactional
   public UserDTO addUser(UserDTO user) {
 
     if (userRepository.existsByUsername(user.username())) {
@@ -97,13 +82,18 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
     return true;
   }
 
+  @EventListener
+  void onExistsUserEvent(UserExistsEvent event) {
+    log.info("OnUserExistsEvent. User id: {}", event.getId());
+    existsById(event.getId());
+  }
+
   @Override
   @Transactional
   public long deleteWithRelatedData(long userId) {
     existsById(userId);
-    goalInternalAPI.deleteGoalsForUser(userId);
-    habitInternalAPI.deleteHabitsForUser(userId);
-    habitTrackerInternalApi.deleteTrackingsForUser(userId);
+    events.publishEvent(new UserDeleteEvent(userId));
+    userRepository.deleteById(userId);
     return userId;
   }
 }

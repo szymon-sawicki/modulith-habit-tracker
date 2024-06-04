@@ -2,41 +2,29 @@ package net.szymonsawicki.net.habittracker.goal.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.szymonsawicki.net.habittracker.GoalExistsEvent;
+import net.szymonsawicki.net.habittracker.UserDeleteEvent;
+import net.szymonsawicki.net.habittracker.UserExistsEvent;
 import net.szymonsawicki.net.habittracker.goal.GoalDTO;
 import net.szymonsawicki.net.habittracker.goal.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
 import net.szymonsawicki.net.habittracker.goal.mapper.GoalMapper;
 import net.szymonsawicki.net.habittracker.goal.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
-import net.szymonsawicki.net.habittracker.user.UserInternalAPI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class GoalService implements GoalInternalAPI, GoalExternalAPI {
-  private GoalMapper goalMapper;
-  private GoalRepository goalRepository;
-
-  // TODO remove this two dependencies by usage of events
-  private HabitInternalAPI habitInternalAPI;
-  private UserInternalAPI userInternalAPI;
-
-  @Autowired
-  @Lazy
-  public void setUserInternalAPI(UserInternalAPI userInternalAPI) {
-    this.userInternalAPI = userInternalAPI;
-  }
-
-  public GoalService(
-      GoalMapper goalMapper, GoalRepository goalRepository, HabitInternalAPI habitInternalAPI) {
-    this.goalMapper = goalMapper;
-    this.goalRepository = goalRepository;
-    this.habitInternalAPI = habitInternalAPI;
-  }
+  private final ApplicationEventPublisher eventPublisher;
+  private final GoalMapper goalMapper;
+  private final GoalRepository goalRepository;
+  private final HabitInternalAPI habitInternalAPI;
 
   @Override
   public boolean existsByGoalId(long goalId) {
@@ -66,7 +54,7 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   @Override
   public List<GoalDTO> findGoalsForUser(long userId) {
 
-    userInternalAPI.existsById(userId);
+    eventPublisher.publishEvent(new UserExistsEvent(userId));
 
     var goalsForUser = goalMapper.toDtos(goalRepository.findByUserId(userId));
 
@@ -78,10 +66,15 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
 
   @Override
   public GoalDTO addGoal(GoalDTO goalDTO) {
+
+    eventPublisher.publishEvent(new UserExistsEvent(goalDTO.userId()));
+
     var addedGoal = goalRepository.save(goalMapper.toEntity(goalDTO));
 
     if (!goalDTO.habits().isEmpty()) {
-      var savedHabits = habitInternalAPI.saveHabits(goalDTO.habits());
+      var habitsWithGoalId =
+          goalDTO.habits().stream().map(habit -> habit.withGoalId(addedGoal.getId())).toList();
+      var savedHabits = habitInternalAPI.saveHabits(habitsWithGoalId);
     }
 
     log.info(String.format("Added goal: %s", addedGoal));
@@ -89,9 +82,15 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
     return goalMapper.toDto(addedGoal);
   }
 
-  @Override
-  @Transactional
-  public void deleteGoalsForUser(long userId) {
-    goalRepository.deleteByUserId(userId);
+  @EventListener
+  void onGoalExistsEvent(GoalExistsEvent event) {
+    log.info("OnGoalExistsEvent. Goal id: {}", event.getId());
+    existsByGoalId(event.getId());
+  }
+
+  @EventListener
+  void onUserDeleteEvent(UserDeleteEvent event) {
+    log.info("OnUserDeleteEvent. User id: {}", event.getId());
+    goalRepository.deleteByUserId(event.getId());
   }
 }

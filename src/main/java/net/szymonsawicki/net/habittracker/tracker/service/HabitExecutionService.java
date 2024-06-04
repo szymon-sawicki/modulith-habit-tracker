@@ -1,7 +1,11 @@
 package net.szymonsawicki.net.habittracker.tracker.service;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.szymonsawicki.net.habittracker.HabitExistsEvent;
+import net.szymonsawicki.net.habittracker.UserDeleteEvent;
+import net.szymonsawicki.net.habittracker.UserExistsEvent;
 import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
 import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
@@ -11,50 +15,51 @@ import net.szymonsawicki.net.habittracker.tracker.model.HabitExecutionEntity;
 import net.szymonsawicki.net.habittracker.tracker.repository.HabitExecutionRepository;
 import net.szymonsawicki.net.habittracker.tracker.service.exception.HabitExecutionException;
 import net.szymonsawicki.net.habittracker.user.UserInternalAPI;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class HabitExecutionService implements HabitTrackerExternalApi, HabitTrackerInternalApi {
 
-  private UserInternalAPI userInternalAPI;
-  private HabitInternalAPI habitInternalAPI;
-  private HabitExecutionRepository habitExecutionRepository;
-  private HabitExecutionMapper habitExecutionMapper;
+  private final ApplicationEventPublisher eventPublisher;
+  private final UserInternalAPI userInternalAPI;
+  private final HabitInternalAPI habitInternalAPI;
+  private final HabitExecutionRepository habitExecutionRepository;
+  private final HabitExecutionMapper habitExecutionMapper;
 
-  public HabitExecutionService(
-      UserInternalAPI userInternalAPI,
-      HabitInternalAPI habitInternalAPI,
-      HabitExecutionRepository habitExecutionRepository,
-      HabitExecutionMapper habitExecutionMapper) {
-    this.userInternalAPI = userInternalAPI;
-    this.habitInternalAPI = habitInternalAPI;
-    this.habitExecutionRepository = habitExecutionRepository;
-    this.habitExecutionMapper = habitExecutionMapper;
-  }
+  @ApplicationModuleListener
+  public void onDeleteTrackingsForUser(UserDeleteEvent event) {
+    eventPublisher.publishEvent(new UserExistsEvent(event.getId()));
+    log.info("OnUserDeleteEvent. User id: {}", event.getId());
 
-  @Override
-  @Transactional
-  public void deleteTrackingsForUser(long userId) {
-    habitExecutionRepository.deleteAllByUserId(userId);
+    habitExecutionRepository.deleteAllByUserId(event.getId());
   }
 
   @Override
   public List<HabitExecutionDTO> findAllExecutionsByHabitId(long habitId) {
+
+    eventPublisher.publishEvent(new HabitExistsEvent(habitId));
+
     return habitExecutionMapper.toDtos(habitExecutionRepository.findAllByHabitId(habitId));
   }
 
   @Override
   public List<HabitExecutionDTO> findAllExecutionsByUserId(long userId) {
+
+    eventPublisher.publishEvent(new UserExistsEvent(userId));
+
     return habitExecutionMapper.toDtos(habitExecutionRepository.findAllByUserId(userId));
   }
 
   @Override
   public HabitExecutionDTO addHabitExecution(HabitExecutionDTO habitExecution) {
 
-    userInternalAPI.existsById(habitExecution.userId());
-    habitInternalAPI.existsById(habitExecution.habitId());
+    eventPublisher.publishEvent(new UserExistsEvent(habitExecution.userId()));
+    eventPublisher.publishEvent(new HabitExistsEvent(habitExecution.habitId()));
+
     var entityToInsert = habitExecutionMapper.toEntity(habitExecution);
 
     if (isAnyExecutionOverlapping(entityToInsert)) {
