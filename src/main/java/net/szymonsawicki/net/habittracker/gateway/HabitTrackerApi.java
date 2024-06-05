@@ -1,6 +1,7 @@
 package net.szymonsawicki.net.habittracker.gateway;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import net.szymonsawicki.net.habittracker.goal.GoalDTO;
 import net.szymonsawicki.net.habittracker.goal.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.habit.HabitDTO;
@@ -13,22 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class HabitTrackerApi {
-  private GoalExternalAPI goalExternalAPI;
-  private HabitExternalAPI habitExternalAPI;
-  private HabitTrackerExternalApi habitTrackerExternalApi;
-  private UserExternalAPI userExternalAPI;
-
-  public HabitTrackerApi(
-      GoalExternalAPI goalExternalAPI,
-      HabitExternalAPI habitExternalAPI,
-      HabitTrackerExternalApi habitTrackerExternalApi,
-      UserExternalAPI userExternalAPI) {
-    this.goalExternalAPI = goalExternalAPI;
-    this.habitExternalAPI = habitExternalAPI;
-    this.habitTrackerExternalApi = habitTrackerExternalApi;
-    this.userExternalAPI = userExternalAPI;
-  }
+  private final GoalExternalAPI goalExternalAPI;
+  private final HabitExternalAPI habitExternalAPI;
+  private final HabitTrackerExternalApi habitTrackerExternalApi;
+  private final UserExternalAPI userExternalAPI;
 
   @GetMapping("user/")
   public List<UserDTO> findAllUsers() {
@@ -73,5 +64,17 @@ public class HabitTrackerApi {
   @PostMapping("/habit-execution")
   public HabitExecutionDTO addHabitExecution(@RequestBody HabitExecutionDTO habitExecutionDTO) {
     return habitTrackerExternalApi.addHabitExecution(habitExecutionDTO);
+  }
+
+  @GetMapping("habit-execution/habit/{habitId}")
+  public List<HabitExecutionDTO> findAllHabitExecutionsForHabit(
+      @PathVariable("habitId") long habitId) {
+    return habitTrackerExternalApi.findAllExecutionsByHabitId(habitId);
+  }
+
+  @GetMapping("habit-execution/user/{userId}")
+  public List<HabitExecutionDTO> findAllHabitExecutionsForUser(
+      @PathVariable("userId") long userId) {
+    return habitTrackerExternalApi.findAllExecutionsByHabitId(userId);
   }
 }

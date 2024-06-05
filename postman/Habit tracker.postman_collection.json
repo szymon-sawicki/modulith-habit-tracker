@@ -161,6 +161,74 @@
 			"response": []
 		},
 		{
+			"name": "Get all habit executions for user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"habitId\": 1,\r\n  \"userId\": 1,\r\n  \"durationMin\": 30,\r\n  \"comment\": \"Morning exercise\",\r\n  \"executionTimestamp\": \"2024-05-31T08:30:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/habit-execution/user/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"habit-execution",
+						"user",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all habit executions for habit",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"habitId\": 1,\r\n  \"userId\": 1,\r\n  \"durationMin\": 30,\r\n  \"comment\": \"Morning exercise\",\r\n  \"executionTimestamp\": \"2024-05-31T08:30:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/habit-execution/habit/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"habit-execution",
+						"habit",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Add habit execution",
 			"request": {
 				"method": "POST",
