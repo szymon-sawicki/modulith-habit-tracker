@@ -8,4 +8,6 @@ public interface HabitTrackerExternalApi {
   List<HabitExecutionDTO> findAllExecutionsByUserId(long userId);
 
   HabitExecutionDTO addHabitExecution(HabitExecutionDTO habitExecution);
+
+  UserTrackerDTO getUserTracker(long userId);
 }

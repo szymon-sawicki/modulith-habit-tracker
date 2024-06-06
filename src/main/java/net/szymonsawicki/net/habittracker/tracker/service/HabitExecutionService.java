@@ -1,6 +1,8 @@
 package net.szymonsawicki.net.habittracker.tracker.service;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.HabitExistsEvent;
@@ -10,11 +12,11 @@ import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
 import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerInternalApi;
+import net.szymonsawicki.net.habittracker.tracker.UserTrackerDTO;
 import net.szymonsawicki.net.habittracker.tracker.mapper.HabitExecutionMapper;
 import net.szymonsawicki.net.habittracker.tracker.model.HabitExecutionEntity;
 import net.szymonsawicki.net.habittracker.tracker.repository.HabitExecutionRepository;
 import net.szymonsawicki.net.habittracker.tracker.service.exception.HabitExecutionException;
-import net.szymonsawicki.net.habittracker.user.UserInternalAPI;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,9 @@ import org.springframework.stereotype.Service;
 public class HabitExecutionService implements HabitTrackerExternalApi, HabitTrackerInternalApi {
 
   private final ApplicationEventPublisher eventPublisher;
-  private final UserInternalAPI userInternalAPI;
-  private final HabitInternalAPI habitInternalAPI;
   private final HabitExecutionRepository habitExecutionRepository;
   private final HabitExecutionMapper habitExecutionMapper;
+  private final HabitInternalAPI habitInternalAPI;
 
   @ApplicationModuleListener
   public void onDeleteTrackingsForUser(UserDeleteEvent event) {
@@ -70,6 +71,23 @@ public class HabitExecutionService implements HabitTrackerExternalApi, HabitTrac
     log.info(String.format("Added habit execution: %s", addedExecution));
 
     return habitExecutionMapper.toDto(addedExecution);
+  }
+
+  @Override
+  public UserTrackerDTO getUserTracker(long userId) {
+
+    eventPublisher.publishEvent(new UserExistsEvent(userId));
+
+    var executionsHashmap =
+        habitInternalAPI.findAllHabitsForUser(userId).stream()
+            .collect(
+                Collectors.toMap(
+                    Function.identity(),
+                    e ->
+                        habitExecutionMapper.toDtos(
+                            habitExecutionRepository.findAllByHabitId(e.id()))));
+
+    return new UserTrackerDTO(userId, executionsHashmap);
   }
 
   private boolean isAnyExecutionOverlapping(HabitExecutionEntity executionEntity) {
