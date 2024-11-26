@@ -15,6 +15,7 @@ import net.szymonsawicki.net.habittracker.goal.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -83,12 +84,14 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   }
 
   @EventListener
+  @Async
   void onGoalExistsEvent(GoalExistsEvent event) {
     log.info("OnGoalExistsEvent. Goal id: {}", event.getId());
     existsByGoalId(event.getId());
   }
 
   @EventListener
+  @Async
   void onUserDeleteEvent(UserDeleteEvent event) {
     log.info("OnUserDeleteEvent. User id: {}", event.getId());
     goalRepository.deleteByUserId(event.getId());

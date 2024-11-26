@@ -9,7 +9,7 @@
 		{
 			"name": "Create test data",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"url": {
 					"raw": "http://localhost:8080/test-data/",

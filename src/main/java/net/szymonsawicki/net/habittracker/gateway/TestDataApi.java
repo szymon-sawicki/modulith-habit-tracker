@@ -10,7 +10,7 @@ import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.user.UserDTO;
 import net.szymonsawicki.net.habittracker.user.UserExternalAPI;
 import net.szymonsawicki.net.habittracker.user.UserType;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +33,7 @@ public class TestDataApi {
     this.userExternalAPI = userExternalAPI;
   }
 
-  @GetMapping("/")
+  @PostMapping("/")
   public String createTestDataset() {
 
     var insertedUserId =

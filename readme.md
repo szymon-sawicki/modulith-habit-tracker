@@ -1,5 +1,7 @@
 # Habit Tracker Application
 
+Link to blog post: [Comprehensive Guide to Spring Modulith](https://szymonsawicki.net/comprehensive-guide-to-spring-modulith/)
+
 ## Overview
 
 Habit Tracker is a modern, modular Spring Boot application designed to help users track their habits and achieve their goals. Built with a focus on clean architecture and modularity using Spring Modulith, this application provides a robust platform for personal development and habit formation.
@@ -89,6 +91,12 @@ The application uses domain events for cross-module communication:
 ```bash
 ./gradlew bootRun
 ```
+
+### Loading of test data
+
+For creating some test data, additional endpoint is created just execute POST request to: http://localhost:8080/test-data
+
+In "documentation" directory you can find ready set of requests for testing purposes.
 
 ## License
 
