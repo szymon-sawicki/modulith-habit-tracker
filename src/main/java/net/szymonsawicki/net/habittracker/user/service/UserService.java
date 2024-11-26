@@ -15,6 +15,7 @@ import net.szymonsawicki.net.habittracker.user.repository.UserRepository;
 import net.szymonsawicki.net.habittracker.user.service.exception.UserServiceException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,6 +84,7 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
   }
 
   @EventListener
+  @Async
   void onExistsUserEvent(UserExistsEvent event) {
     log.info("OnUserExistsEvent. User id: {}", event.getId());
     existsById(event.getId());

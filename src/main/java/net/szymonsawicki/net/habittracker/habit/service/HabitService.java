@@ -16,6 +16,7 @@ import net.szymonsawicki.net.habittracker.habit.model.HabitEntity;
 import net.szymonsawicki.net.habittracker.habit.repository.HabitRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,12 +77,14 @@ public class HabitService implements HabitExternalAPI, HabitInternalAPI {
   }
 
   @EventListener
+  @Async
   void onHabitExistsEvent(HabitExistsEvent event) {
     log.info("OnHabitExistsEvent. Habit id: {}", event.getId());
     existsById(event.getId());
   }
 
   @EventListener
+  @Async
   void onUserDeleteEvent(UserDeleteEvent event) {
     log.info("OnUserDeleteEvent. User id: {}", event.getId());
     habitRepository.deleteAllByUserId(event.getId());
