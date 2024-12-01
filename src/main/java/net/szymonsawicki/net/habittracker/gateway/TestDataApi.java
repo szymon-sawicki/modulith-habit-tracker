@@ -1,6 +1,7 @@
 package net.szymonsawicki.net.habittracker.gateway;
 
 import java.util.ArrayList;
+import java.util.List;
 import net.szymonsawicki.net.habittracker.goal.GoalDTO;
 import net.szymonsawicki.net.habittracker.goal.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.habit.HabitDTO;
@@ -11,6 +12,7 @@ import net.szymonsawicki.net.habittracker.user.UserDTO;
 import net.szymonsawicki.net.habittracker.user.UserExternalAPI;
 import net.szymonsawicki.net.habittracker.user.UserType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,5 +57,13 @@ public class TestDataApi {
                 HabitPriority.HIGH));
 
     return "TEST DATA SUCCESFULY CREATED";
+  }
+
+  @PostMapping("/users/")
+  public String createTestUsers(@RequestBody List<UserDTO> usersToAdd) {
+
+    var insertedUserIds = userExternalAPI.addUsers(usersToAdd);
+
+    return "TEST USER SUCCESFULLY CREATED. IDs : " + insertedUserIds;
   }
 }

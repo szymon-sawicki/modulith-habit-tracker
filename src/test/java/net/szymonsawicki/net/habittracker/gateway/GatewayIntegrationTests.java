@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker.integration;
+package net.szymonsawicki.net.habittracker.gateway;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -12,7 +12,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HabitTrackerIntegrationTests {
+public class GatewayIntegrationTests {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
@@ -39,6 +39,6 @@ public class HabitTrackerIntegrationTests {
     assertThat(userWithGoals).isNotNull();
     assertThat(userWithGoals.goals()).isNotNull();
     assertThat(userWithGoals.goals().size()).isEqualTo(1);
-    assertThat(userWithGoals.goals().get(0).habits().size()).isEqualTo(1);
+    assertThat(userWithGoals.goals().getFirst().habits().size()).isEqualTo(1);
   }
 }

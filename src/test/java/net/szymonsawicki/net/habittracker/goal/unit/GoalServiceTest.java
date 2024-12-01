@@ -62,7 +62,7 @@ class GoalServiceTest {
   }
 
   @Test
-  void existsByGoalId_WhenGoalExists_ReturnsTrue() {
+  void shouldCheckIfGoalExistsAndReturnTrue() {
     when(goalRepository.existsById(1L)).thenReturn(true);
 
     assertTrue(goalService.existsByGoalId(1L));
@@ -70,14 +70,14 @@ class GoalServiceTest {
   }
 
   @Test
-  void existsByGoalId_WhenGoalDoesNotExist_ThrowsException() {
+  void shouldCheckIfGoalExistsAndThrowException() {
     when(goalRepository.existsById(1L)).thenReturn(false);
 
     assertThrows(EntityNotFoundException.class, () -> goalService.existsByGoalId(1L));
   }
 
   @Test
-  void findGoalWithHabits_WhenGoalExists_ReturnsGoalWithHabits() {
+  void shouldFindAndReturnGoalWithHabitsWhenGoalExists() {
     when(goalRepository.findById(1L)).thenReturn(Optional.of(testGoalEntity));
     when(habitInternalAPI.findAllHabitsForGoal(1L)).thenReturn(testHabits);
 
@@ -91,14 +91,14 @@ class GoalServiceTest {
   }
 
   @Test
-  void findGoalWithHabits_WhenGoalDoesNotExist_ThrowsException() {
+  void shouldFindGoalWithHabitsWhenGoalNotExists() {
     when(goalRepository.findById(1L)).thenReturn(Optional.empty());
 
     assertThrows(EntityNotFoundException.class, () -> goalService.findGoalWithHabits(1L));
   }
 
   @Test
-  void findGoalsForUser_ReturnsGoalsWithHabits() {
+  void shouldFindGoalForUser() {
     List<GoalEntity> goalEntities = List.of(testGoalEntity);
     when(goalRepository.findByUserId(1L)).thenReturn(goalEntities);
     when(habitInternalAPI.findAllHabitsForGoal(1L)).thenReturn(testHabits);
@@ -112,7 +112,7 @@ class GoalServiceTest {
   }
 
   @Test
-  void addGoal_WithoutHabits_SavesGoalSuccessfully() {
+  void shouldAddGoalWithoutHabitsWithSuccess() {
     GoalDTO inputGoalDTO = new GoalDTO(null, 1L, "Test Goal", "Test Description");
     when(goalRepository.save(any(GoalEntity.class))).thenReturn(testGoalEntity);
 
@@ -125,7 +125,7 @@ class GoalServiceTest {
   }
 
   @Test
-  void addGoal_WithHabits_SavesGoalAndHabits() {
+  void shouldAddGoalWithHabitsWithSuccess() {
     when(goalRepository.save(any(GoalEntity.class))).thenReturn(testGoalEntity);
     when(habitInternalAPI.saveHabits(any())).thenReturn(testHabits);
 
@@ -138,7 +138,7 @@ class GoalServiceTest {
   }
 
   @Test
-  void onUserDeleteEvent_DeletesUserGoals() {
+  void shouldDeleteUserGoalWhenUserDeletedEvent() {
     UserDeleteEvent event = new UserDeleteEvent(1L);
 
     goalService.onUserDeleteEvent(event);
@@ -147,7 +147,7 @@ class GoalServiceTest {
   }
 
   @Test
-  void onGoalExistsEvent_VerifiesGoalExists() {
+  void shouldVerifyGoalExistenceWithSuccess() {
     GoalExistsEvent event = new GoalExistsEvent(1L);
     when(goalRepository.existsById(1L)).thenReturn(true);
 

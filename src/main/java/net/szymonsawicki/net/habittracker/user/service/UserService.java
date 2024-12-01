@@ -98,4 +98,10 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
     userRepository.deleteById(userId);
     return userId;
   }
+
+  @Override
+  public List<UserDTO> addUsers(List<UserDTO> usersToAdd) {
+    var addedUsers = userRepository.saveAll(userMapper.toEntities(usersToAdd));
+    return userMapper.toDtos(addedUsers);
+  }
 }

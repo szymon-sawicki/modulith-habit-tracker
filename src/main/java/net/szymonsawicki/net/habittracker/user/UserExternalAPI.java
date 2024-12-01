@@ -10,4 +10,6 @@ public interface UserExternalAPI {
   long deleteWithRelatedData(long userId);
 
   UserDTO findByIdWithGoalsAndHabits(long id);
+
+  List<UserDTO> addUsers(List<UserDTO> usersToAdd);
 }

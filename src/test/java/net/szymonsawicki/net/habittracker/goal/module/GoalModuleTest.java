@@ -3,19 +3,30 @@ package net.szymonsawicki.net.habittracker.goal.module;
 import static org.assertj.core.api.Assertions.*;
 
 import net.szymonsawicki.net.habittracker.UserDeleteEvent;
+import net.szymonsawicki.net.habittracker.goal.GoalDTO;
+import net.szymonsawicki.net.habittracker.goal.mapper.GoalMapper;
 import net.szymonsawicki.net.habittracker.goal.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.goal.service.GoalService;
 import net.szymonsawicki.net.habittracker.util.TestDataFactory;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.modulith.test.ApplicationModuleTest;
 import org.springframework.modulith.test.Scenario;
 
-@ApplicationModuleTest(ApplicationModuleTest.BootstrapMode.DIRECT_DEPENDENCIES)
+@ApplicationModuleTest(
+    value = ApplicationModuleTest.BootstrapMode.ALL_DEPENDENCIES,
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GoalModuleTest {
 
-  @Autowired GoalRepository goalRepository;
+  @Autowired private GoalRepository goalRepository;
+
+  @Autowired private TestRestTemplate testRestTemplate;
+
+  @Autowired GoalMapper goalMapper;
+
   @Autowired private GoalService goalService;
 
   @BeforeEach
@@ -43,5 +54,31 @@ public class GoalModuleTest {
             });
 
     assertThat(goalRepository.findByUserId(userToDelete)).isEmpty();
+  }
+
+  @Test
+  @Order(2)
+  void shouldAddGoalOnAddGoal(Scenario scenario) {
+
+    // given
+
+    //
+    // var response = testRestTemplate.postForEntity("/test-data/", null, String.class);
+
+    goalRepository.deleteAll();
+
+    var goalUserId = 1L;
+
+    var goalToAdd = new GoalDTO(null, goalUserId, "Test goal", "Test description");
+
+    // then & when
+
+    scenario
+        .stimulate(() -> goalService.addGoal(goalToAdd))
+        .andWaitForStateChange(() -> goalRepository.count())
+        .andVerify(
+            result -> {
+              assertThat(goalRepository.findByUserId(1L).size()).isEqualTo(1);
+            });
   }
 }

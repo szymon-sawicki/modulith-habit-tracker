@@ -8,10 +8,15 @@ import java.util.stream.IntStream;
 import net.szymonsawicki.net.habittracker.goal.model.GoalEntity;
 import net.szymonsawicki.net.habittracker.habit.model.HabitEntity;
 import net.szymonsawicki.net.habittracker.tracker.model.HabitExecutionEntity;
+import net.szymonsawicki.net.habittracker.user.UserDTO;
 import net.szymonsawicki.net.habittracker.user.UserType;
+import net.szymonsawicki.net.habittracker.user.mapper.UserMapper;
+import net.szymonsawicki.net.habittracker.user.mapper.UserMapperImpl;
 import net.szymonsawicki.net.habittracker.user.model.UserEntity;
 
 public class TestDataFactory {
+
+  private static UserMapper userMapper = new UserMapperImpl();
 
   public static GoalEntity createGoalEntity(Long userId, String name, String description) {
     GoalEntity goal = new GoalEntity();
@@ -75,6 +80,10 @@ public class TestDataFactory {
         createUserEntity("admin_user", "admin123", UserType.ADMIN),
         createUserEntity("test_user", "test123", UserType.ADMIN),
         createUserEntity("premium_user", "premium123", UserType.ADMIN));
+  }
+
+  public static List<UserDTO> createTestUserDtos() {
+    return userMapper.toDtos(createTestUserEntities());
   }
 
   public static HabitExecutionEntity createHabitExecutionEntity(
