@@ -62,9 +62,6 @@ public class GoalModuleTest {
 
     // given
 
-    //
-    // var response = testRestTemplate.postForEntity("/test-data/", null, String.class);
-
     goalRepository.deleteAll();
 
     var goalUserId = 1L;

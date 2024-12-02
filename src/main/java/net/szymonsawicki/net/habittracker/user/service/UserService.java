@@ -43,7 +43,7 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
 
     var userEntity = userMapper.toEntity(user);
     var addedUser = userRepository.save(userEntity);
-    log.info(String.format("Added user: %s", addedUser));
+    log.info("Added user: {}", addedUser);
 
     return userMapper.toDto(userEntity);
   }
@@ -60,7 +60,7 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
     var goalsForUser = goalInternalAPI.findGoalsForUser(userId);
 
     if (!goalsForUser.isEmpty()) {
-      userFromDb.goals().addAll(goalsForUser);
+      return userFromDb.withGoals(goalsForUser);
     }
 
     return userFromDb;
@@ -103,5 +103,10 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
   public List<UserDTO> addUsers(List<UserDTO> usersToAdd) {
     var addedUsers = userRepository.saveAll(userMapper.toEntities(usersToAdd));
     return userMapper.toDtos(addedUsers);
+  }
+
+  @Override
+  public UserDTO findByUsername(String username) {
+    return userMapper.toDto(userRepository.findByUsername(username));
   }
 }

@@ -6,12 +6,9 @@ import net.szymonsawicki.net.habittracker.goal.GoalDTO;
 
 public record UserDTO(
     Long id, String username, String password, UserType userType, List<GoalDTO> goals) {
-  public UserDTO(
-      Long id, String username, String password, UserType userType, List<GoalDTO> goals) {
-    this.id = id;
-    this.username = username;
-    this.password = password;
-    this.userType = userType;
-    this.goals = goals == null ? new ArrayList<GoalDTO>() : goals;
+  public UserDTO withGoals(List<GoalDTO> newGoals) {
+    List<GoalDTO> combinedGoals = new ArrayList<>(goals);
+    combinedGoals.addAll(newGoals);
+    return new UserDTO(id, username, password, userType, combinedGoals);
   }
 }

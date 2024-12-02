@@ -5,6 +5,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import net.szymonsawicki.net.habittracker.goal.GoalDTO;
+import net.szymonsawicki.net.habittracker.goal.mapper.GoalMapper;
+import net.szymonsawicki.net.habittracker.goal.mapper.GoalMapperImpl;
 import net.szymonsawicki.net.habittracker.goal.model.GoalEntity;
 import net.szymonsawicki.net.habittracker.habit.model.HabitEntity;
 import net.szymonsawicki.net.habittracker.tracker.model.HabitExecutionEntity;
@@ -16,7 +19,8 @@ import net.szymonsawicki.net.habittracker.user.model.UserEntity;
 
 public class TestDataFactory {
 
-  private static UserMapper userMapper = new UserMapperImpl();
+  private static final UserMapper userMapper = new UserMapperImpl();
+  private static final GoalMapper goalMapper = new GoalMapperImpl();
 
   public static GoalEntity createGoalEntity(Long userId, String name, String description) {
     GoalEntity goal = new GoalEntity();
@@ -44,6 +48,10 @@ public class TestDataFactory {
                     String.format("Goal %d for User %d", i + 1, userId),
                     String.format("Description for goal %d", i + 1)))
         .collect(Collectors.toList());
+  }
+
+  public static List<GoalDTO> createTestGoalDtosForUser(Long userId, int count) {
+    return goalMapper.toDtos(createTestGoalEntitiesForUser(userId, count));
   }
 
   public static HabitEntity createHabitEntity(
