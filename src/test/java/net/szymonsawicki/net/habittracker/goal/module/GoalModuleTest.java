@@ -4,28 +4,21 @@ import static org.assertj.core.api.Assertions.*;
 
 import net.szymonsawicki.net.habittracker.UserDeleteEvent;
 import net.szymonsawicki.net.habittracker.goal.GoalDTO;
-import net.szymonsawicki.net.habittracker.goal.mapper.GoalMapper;
 import net.szymonsawicki.net.habittracker.goal.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.goal.service.GoalService;
 import net.szymonsawicki.net.habittracker.util.TestDataFactory;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.modulith.test.ApplicationModuleTest;
 import org.springframework.modulith.test.Scenario;
 
 @ApplicationModuleTest(
     value = ApplicationModuleTest.BootstrapMode.ALL_DEPENDENCIES,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    module = "goal")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GoalModuleTest {
 
   @Autowired private GoalRepository goalRepository;
-
-  @Autowired private TestRestTemplate testRestTemplate;
-
-  @Autowired GoalMapper goalMapper;
 
   @Autowired private GoalService goalService;
 
@@ -76,6 +69,28 @@ public class GoalModuleTest {
         .andVerify(
             result -> {
               assertThat(goalRepository.findByUserId(1L).size()).isEqualTo(1);
+            });
+  }
+
+  @Test
+  @Order(3)
+  void shouldThrowExceptionWhenUserNotExists(Scenario scenario) {
+
+    // given
+
+    var notExistingUserId = 999L;
+    var testGoalName = "Test goal not existing user";
+
+    var goalToAdd = new GoalDTO(null, notExistingUserId, testGoalName, "Test description");
+
+    // then & when
+
+    scenario
+        .stimulate(() -> goalService.addGoal(goalToAdd))
+        .andWaitForStateChange(() -> goalRepository.existsByName(testGoalName))
+        .andVerify(
+            result -> {
+              assertThat(result).isFalse();
             });
   }
 }

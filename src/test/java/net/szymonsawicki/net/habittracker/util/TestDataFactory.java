@@ -11,11 +11,11 @@ import net.szymonsawicki.net.habittracker.goal.mapper.GoalMapperImpl;
 import net.szymonsawicki.net.habittracker.goal.model.GoalEntity;
 import net.szymonsawicki.net.habittracker.habit.model.HabitEntity;
 import net.szymonsawicki.net.habittracker.tracker.model.HabitExecutionEntity;
-import net.szymonsawicki.net.habittracker.user.UserDTO;
-import net.szymonsawicki.net.habittracker.user.UserType;
-import net.szymonsawicki.net.habittracker.user.mapper.UserMapper;
-import net.szymonsawicki.net.habittracker.user.mapper.UserMapperImpl;
-import net.szymonsawicki.net.habittracker.user.model.UserEntity;
+import net.szymonsawicki.net.habittracker.UserDTO;
+import net.szymonsawicki.net.habittracker.usermanagement.UserType;
+import net.szymonsawicki.net.habittracker.usermanagement.mapper.UserMapper;
+import net.szymonsawicki.net.habittracker.usermanagement.mapper.UserMapperImpl;
+import net.szymonsawicki.net.habittracker.usermanagement.model.UserEntity;
 
 public class TestDataFactory {
 

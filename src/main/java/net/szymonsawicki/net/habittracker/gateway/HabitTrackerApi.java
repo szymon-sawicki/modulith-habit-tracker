@@ -9,8 +9,8 @@ import net.szymonsawicki.net.habittracker.habit.HabitExternalAPI;
 import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.tracker.UserTrackerDTO;
-import net.szymonsawicki.net.habittracker.user.UserDTO;
-import net.szymonsawicki.net.habittracker.user.UserExternalAPI;
+import net.szymonsawicki.net.habittracker.UserDTO;
+import net.szymonsawicki.net.habittracker.usermanagement.UserExternalAPI;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,7 +29,7 @@ public class HabitTrackerApi {
 
   @GetMapping("user/{userId}")
   public UserDTO findUser(@PathVariable("userId") long userId) {
-    return userExternalAPI.findByIdWithGoalsAndHabits(userId);
+    return goalExternalAPI.findUserWithGoals(userId);
   }
 
   @GetMapping("habit/user/{userId}")

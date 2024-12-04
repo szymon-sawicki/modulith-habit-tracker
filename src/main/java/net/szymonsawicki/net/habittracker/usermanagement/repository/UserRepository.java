@@ -1,6 +1,6 @@
-package net.szymonsawicki.net.habittracker.user.repository;
+package net.szymonsawicki.net.habittracker.usermanagement.repository;
 
-import net.szymonsawicki.net.habittracker.user.model.UserEntity;
+import net.szymonsawicki.net.habittracker.usermanagement.model.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {

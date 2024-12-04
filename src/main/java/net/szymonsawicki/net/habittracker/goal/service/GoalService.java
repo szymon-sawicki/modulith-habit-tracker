@@ -6,13 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.GoalExistsEvent;
 import net.szymonsawicki.net.habittracker.UserDeleteEvent;
-import net.szymonsawicki.net.habittracker.UserExistsEvent;
 import net.szymonsawicki.net.habittracker.goal.GoalDTO;
 import net.szymonsawicki.net.habittracker.goal.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
 import net.szymonsawicki.net.habittracker.goal.mapper.GoalMapper;
 import net.szymonsawicki.net.habittracker.goal.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.habit.HabitInternalAPI;
+import net.szymonsawicki.net.habittracker.UserDTO;
+import net.szymonsawicki.net.habittracker.usermanagement.UserInternalAPI;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,27 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   private final GoalMapper goalMapper;
   private final GoalRepository goalRepository;
   private final HabitInternalAPI habitInternalAPI;
+  private final UserInternalAPI userInternalAPI;
 
   @Override
   public boolean existsByGoalId(long goalId) {
     if (!goalRepository.existsById(goalId))
       throw new EntityNotFoundException("Goal with id " + goalId + " does not exist");
     return true;
+  }
+
+  @Override
+  public UserDTO findUserWithGoals(Long userId) {
+
+    var user = userInternalAPI.findById(userId);
+
+    var goalsForUser = goalRepository.findByUserId(userId);
+
+    if (!goalsForUser.isEmpty()) {
+      return user.withGoals(goalMapper.toDtos(goalsForUser));
+    }
+
+    return user;
   }
 
   @Override
@@ -54,7 +70,7 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   @Override
   public List<GoalDTO> findGoalsForUser(long userId) {
 
-    eventPublisher.publishEvent(new UserExistsEvent(userId));
+    if (userInternalAPI.existsById(userId)) throw new EntityNotFoundException("User not exists");
 
     var goalsForUser = goalMapper.toDtos(goalRepository.findByUserId(userId));
 
@@ -67,7 +83,8 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   @Override
   public GoalDTO addGoal(GoalDTO goalDTO) {
 
-    eventPublisher.publishEvent(new UserExistsEvent(goalDTO.userId()));
+    if (userInternalAPI.existsById(goalDTO.userId()))
+      throw new EntityNotFoundException("User not exists");
 
     var addedGoal = goalRepository.save(goalMapper.toEntity(goalDTO));
 
