@@ -1,8 +1,7 @@
-package net.szymonsawicki.net.habittracker.goal;
+package net.szymonsawicki.net.habittracker.goalmagement;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.szymonsawicki.net.habittracker.habit.HabitDTO;
 
 public record GoalDTO(
     Long id, Long userId, String name, String description, List<HabitDTO> habits) {

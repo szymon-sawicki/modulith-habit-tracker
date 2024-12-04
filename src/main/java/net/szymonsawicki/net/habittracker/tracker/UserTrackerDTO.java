@@ -2,6 +2,6 @@ package net.szymonsawicki.net.habittracker.tracker;
 
 import java.util.List;
 import java.util.Map;
-import net.szymonsawicki.net.habittracker.habit.HabitDTO;
+import net.szymonsawicki.net.habittracker.goalmagement.HabitDTO;
 
 public record UserTrackerDTO(Long userId, Map<HabitDTO, List<HabitExecutionDTO>> habitExecutions) {}

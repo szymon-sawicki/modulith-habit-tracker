@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker;
+package net.szymonsawicki.net.habittracker.events;
 
 import lombok.Getter;
 import lombok.Setter;
