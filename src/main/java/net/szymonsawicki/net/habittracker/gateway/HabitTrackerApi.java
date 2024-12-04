@@ -2,15 +2,15 @@ package net.szymonsawicki.net.habittracker.gateway;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import net.szymonsawicki.net.habittracker.goal.GoalDTO;
-import net.szymonsawicki.net.habittracker.goal.GoalExternalAPI;
-import net.szymonsawicki.net.habittracker.habit.HabitDTO;
-import net.szymonsawicki.net.habittracker.habit.HabitExternalAPI;
+import net.szymonsawicki.net.habittracker.goalmagement.GoalDTO;
+import net.szymonsawicki.net.habittracker.goalmagement.GoalExternalAPI;
+import net.szymonsawicki.net.habittracker.goalmagement.HabitDTO;
+import net.szymonsawicki.net.habittracker.goalmagement.HabitExternalAPI;
 import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.tracker.UserTrackerDTO;
-import net.szymonsawicki.net.habittracker.user.UserDTO;
-import net.szymonsawicki.net.habittracker.user.UserExternalAPI;
+import net.szymonsawicki.net.habittracker.usermanagement.UserDTO;
+import net.szymonsawicki.net.habittracker.usermanagement.UserExternalAPI;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,7 +29,7 @@ public class HabitTrackerApi {
 
   @GetMapping("user/{userId}")
   public UserDTO findUser(@PathVariable("userId") long userId) {
-    return userExternalAPI.findByIdWithGoalsAndHabits(userId);
+    return goalExternalAPI.findUserWithGoals(userId);
   }
 
   @GetMapping("habit/user/{userId}")
