@@ -5,10 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-
-import net.szymonsawicki.net.habittracker.UserDeleteEvent;
-import net.szymonsawicki.net.habittracker.goal.GoalInternalAPI;
-import net.szymonsawicki.net.habittracker.UserDTO;
+import net.szymonsawicki.net.habittracker.events.UserDeleteEvent;
+import net.szymonsawicki.net.habittracker.goalmagement.GoalInternalAPI;
+import net.szymonsawicki.net.habittracker.usermanagement.UserDTO;
 import net.szymonsawicki.net.habittracker.usermanagement.UserType;
 import net.szymonsawicki.net.habittracker.usermanagement.repository.UserRepository;
 import net.szymonsawicki.net.habittracker.usermanagement.service.UserService;
@@ -61,7 +60,8 @@ public class UserModuleTest {
   void shouldAddNewUser(Scenario scenario) {
     // given
     String testUsername = "testUser";
-    UserDTO newUser = new UserDTO(null, testUsername, "Test User", UserType.USER, null);
+    UserDTO newUser =
+        new UserDTO(null, testUsername, "Test User", UserType.USER, new ArrayList<>());
 
     // when & then
     scenario
@@ -84,7 +84,7 @@ public class UserModuleTest {
     // when & then
     assertThatThrownBy(() -> userService.addUser(user)).isInstanceOf(UserServiceException.class);
   }
-/*
+  /*
   @Test
   @Order(4)
   void shouldFindUserWithGoalsAndHabits(Scenario scenario) {

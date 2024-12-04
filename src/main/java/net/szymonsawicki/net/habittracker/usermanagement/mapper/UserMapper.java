@@ -3,7 +3,7 @@ package net.szymonsawicki.net.habittracker.usermanagement.mapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.StreamSupport;
-import net.szymonsawicki.net.habittracker.UserDTO;
+import net.szymonsawicki.net.habittracker.usermanagement.UserDTO;
 import net.szymonsawicki.net.habittracker.usermanagement.model.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

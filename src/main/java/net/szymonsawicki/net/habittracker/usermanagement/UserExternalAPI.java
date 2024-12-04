@@ -1,7 +1,5 @@
 package net.szymonsawicki.net.habittracker.usermanagement;
 
-import net.szymonsawicki.net.habittracker.UserDTO;
-
 import java.util.List;
 
 public interface UserExternalAPI {
