@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker.goalmagement;
+package net.szymonsawicki.net.habittracker.habit;
 
 import java.util.List;
 
