@@ -7,7 +7,7 @@ import lombok.ToString;
 import net.szymonsawicki.net.habittracker.usermanagement.UserType;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", schema = "tracker_user")
 @Getter
 @Setter
 @ToString

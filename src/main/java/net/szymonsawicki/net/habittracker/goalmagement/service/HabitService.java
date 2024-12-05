@@ -4,16 +4,15 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.szymonsawicki.net.habittracker.events.GoalExistsEvent;
-import net.szymonsawicki.net.habittracker.events.HabitExistsEvent;
-import net.szymonsawicki.net.habittracker.events.UserDeleteEvent;
-import net.szymonsawicki.net.habittracker.events.UserExistsEvent;
+import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
 import net.szymonsawicki.net.habittracker.goalmagement.HabitDTO;
 import net.szymonsawicki.net.habittracker.goalmagement.HabitExternalAPI;
 import net.szymonsawicki.net.habittracker.goalmagement.HabitInternalAPI;
 import net.szymonsawicki.net.habittracker.goalmagement.mapper.HabitMapper;
 import net.szymonsawicki.net.habittracker.goalmagement.model.HabitEntity;
+import net.szymonsawicki.net.habittracker.goalmagement.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.goalmagement.repository.HabitRepository;
+import net.szymonsawicki.net.habittracker.usermanagement.UserInternalAPI;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -26,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class HabitService implements HabitExternalAPI, HabitInternalAPI {
   private final ApplicationEventPublisher eventPublisher;
   private final HabitRepository habitRepository;
+  private final GoalRepository goalRepository;
   private final HabitMapper habitMapper;
+  private final UserInternalAPI userInternalAPI;
 
   @Override
   public List<HabitDTO> findAllHabitsForGoal(long goalId) {
@@ -37,8 +38,10 @@ public class HabitService implements HabitExternalAPI, HabitInternalAPI {
   @Transactional
   public HabitDTO addHabit(HabitDTO habit) {
 
-    eventPublisher.publishEvent(new UserExistsEvent(habit.userId()));
-    eventPublisher.publishEvent(new GoalExistsEvent(habit.goalId()));
+    if (!userInternalAPI.existsById(habit.userId()))
+      throw new EntityNotFoundException("User not exists");
+    if (!goalRepository.existsById(habit.goalId()))
+      throw new EntityNotFoundException("Goal not exists");
 
     var savedHabit = habitRepository.save(habitMapper.toEntity(habit));
     log.info(String.format("Added habit: %s", savedHabit));
@@ -47,7 +50,6 @@ public class HabitService implements HabitExternalAPI, HabitInternalAPI {
 
   @Override
   public List<HabitDTO> findAllHabitsForUser(long userId) {
-    eventPublisher.publishEvent(new UserExistsEvent(userId));
     return habitMapper.toDtos(habitRepository.findAllByUserId(userId));
   }
 
@@ -56,7 +58,7 @@ public class HabitService implements HabitExternalAPI, HabitInternalAPI {
     var habit =
         habitRepository
             .findById(habitId)
-            .orElseThrow(() -> new EntityNotFoundException("Goal can't be found"));
+            .orElseThrow(() -> new EntityNotFoundException("Habit can't be found"));
     return habitMapper.toDto(habit);
   }
 
@@ -78,14 +80,7 @@ public class HabitService implements HabitExternalAPI, HabitInternalAPI {
 
   @EventListener
   @Async
-  void onHabitExistsEvent(HabitExistsEvent event) {
-    log.info("OnHabitExistsEvent. Habit id: {}", event.getId());
-    existsById(event.getId());
-  }
-
-  @EventListener
-  @Async
-  void onUserDeleteEvent(UserDeleteEvent event) {
+  void onUserDeleteEvent(UserDeletedEvent event) {
     log.info("OnUserDeleteEvent. User id: {}", event.getId());
     habitRepository.deleteAllByUserId(event.getId());
   }

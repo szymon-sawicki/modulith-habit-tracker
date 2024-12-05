@@ -2,7 +2,7 @@ package net.szymonsawicki.net.habittracker.goalmagement.module;
 
 import static org.assertj.core.api.Assertions.*;
 
-import net.szymonsawicki.net.habittracker.events.UserDeleteEvent;
+import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
 import net.szymonsawicki.net.habittracker.goalmagement.GoalDTO;
 import net.szymonsawicki.net.habittracker.goalmagement.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.goalmagement.service.GoalService;
@@ -39,7 +39,7 @@ public class GoalModuleTest {
     var userToDelete = 1L;
 
     scenario
-        .publish(new UserDeleteEvent(userToDelete))
+        .publish(new UserDeletedEvent(userToDelete))
         .andWaitForStateChange(() -> goalRepository.count())
         .andVerify(
             result -> {

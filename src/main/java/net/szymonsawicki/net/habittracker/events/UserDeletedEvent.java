@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDeleteEvent {
+public class UserDeletedEvent {
   private Long id;
 
-  public UserDeleteEvent(Long id) {
+  public UserDeletedEvent(Long id) {
     this.id = id;
   }
 }

@@ -4,8 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.szymonsawicki.net.habittracker.events.UserDeleteEvent;
-import net.szymonsawicki.net.habittracker.events.UserExistsEvent;
+import net.szymonsawicki.net.habittracker.events.UserCreatedEvent;
+import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
 import net.szymonsawicki.net.habittracker.usermanagement.UserDTO;
 import net.szymonsawicki.net.habittracker.usermanagement.UserExternalAPI;
 import net.szymonsawicki.net.habittracker.usermanagement.UserInternalAPI;
@@ -13,8 +13,6 @@ import net.szymonsawicki.net.habittracker.usermanagement.mapper.UserMapper;
 import net.szymonsawicki.net.habittracker.usermanagement.repository.UserRepository;
 import net.szymonsawicki.net.habittracker.usermanagement.service.exception.UserServiceException;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +39,15 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
 
     var userEntity = userMapper.toEntity(user);
     var addedUser = userRepository.save(userEntity);
+
+    events.publishEvent(new UserCreatedEvent(addedUser.getId(), user.userGoals()));
+
     log.info("Added user: {}", addedUser);
 
-    return userMapper.toDto(userEntity);
+    var mappedUser = userMapper.toDto(userEntity);
+    mappedUser.userGoals().addAll(user.userGoals());
+
+    return mappedUser;
   }
 
   @Override
@@ -63,18 +67,11 @@ public class UserService implements UserInternalAPI, UserExternalAPI {
     return true;
   }
 
-  @EventListener
-  @Async
-  void onExistsUserEvent(UserExistsEvent event) {
-    log.info("OnUserExistsEvent. User id: {}", event.getId());
-    existsById(event.getId());
-  }
-
   @Override
   @Transactional
   public long deleteWithRelatedData(long userId) {
     existsById(userId);
-    events.publishEvent(new UserDeleteEvent(userId));
+    events.publishEvent(new UserDeletedEvent(userId));
     userRepository.deleteById(userId);
     return userId;
   }

@@ -1,13 +1,12 @@
 package net.szymonsawicki.net.habittracker.tracker.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.szymonsawicki.net.habittracker.events.HabitExistsEvent;
-import net.szymonsawicki.net.habittracker.events.UserDeleteEvent;
-import net.szymonsawicki.net.habittracker.events.UserExistsEvent;
+import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
 import net.szymonsawicki.net.habittracker.goalmagement.HabitInternalAPI;
 import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
@@ -32,17 +31,15 @@ public class HabitExecutionService implements HabitTrackerExternalApi, HabitTrac
   private final HabitInternalAPI habitInternalAPI;
 
   @ApplicationModuleListener
-  public void onDeleteTrackingsForUser(UserDeleteEvent event) {
-    eventPublisher.publishEvent(new UserExistsEvent(event.getId()));
+  public void onDeleteTrackingsForUser(UserDeletedEvent event) {
     log.info("OnUserDeleteEvent. User id: {}", event.getId());
-
     habitExecutionRepository.deleteAllByUserId(event.getId());
   }
 
   @Override
   public List<HabitExecutionDTO> findAllExecutionsByHabitId(long habitId) {
 
-    eventPublisher.publishEvent(new HabitExistsEvent(habitId));
+    if (habitInternalAPI.existsById(habitId)) throw new EntityNotFoundException("Habit not exists");
 
     return habitExecutionMapper.toDtos(habitExecutionRepository.findAllByHabitId(habitId));
   }
@@ -50,16 +47,19 @@ public class HabitExecutionService implements HabitTrackerExternalApi, HabitTrac
   @Override
   public List<HabitExecutionDTO> findAllExecutionsByUserId(long userId) {
 
-    eventPublisher.publishEvent(new UserExistsEvent(userId));
+    var executionsForUser = habitExecutionRepository.findAllByUserId(userId);
 
-    return habitExecutionMapper.toDtos(habitExecutionRepository.findAllByUserId(userId));
+    if (executionsForUser.isEmpty()) {
+      throw new HabitExecutionException("No exeution for user with id " + userId + " found");
+    }
+    return habitExecutionMapper.toDtos(executionsForUser);
   }
 
   @Override
   public HabitExecutionDTO addHabitExecution(HabitExecutionDTO habitExecution) {
 
-    eventPublisher.publishEvent(new UserExistsEvent(habitExecution.userId()));
-    eventPublisher.publishEvent(new HabitExistsEvent(habitExecution.habitId()));
+    if (habitInternalAPI.existsById(habitExecution.habitId()))
+      throw new EntityNotFoundException("Habit not exists");
 
     var entityToInsert = habitExecutionMapper.toEntity(habitExecution);
 
@@ -75,8 +75,6 @@ public class HabitExecutionService implements HabitTrackerExternalApi, HabitTrac
 
   @Override
   public UserTrackerDTO getUserTracker(long userId) {
-
-    eventPublisher.publishEvent(new UserExistsEvent(userId));
 
     var executionsHashmap =
         habitInternalAPI.findAllHabitsForUser(userId).stream()

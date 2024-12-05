@@ -2,10 +2,10 @@ package net.szymonsawicki.net.habittracker.gateway;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import net.szymonsawicki.net.habittracker.goalmagement.*;
 import net.szymonsawicki.net.habittracker.goalmagement.GoalDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.goalmagement.HabitDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitExternalAPI;
+import net.szymonsawicki.net.habittracker.goalmagement.UserWithGoalsDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.tracker.UserTrackerDTO;
@@ -28,7 +28,7 @@ public class HabitTrackerApi {
   }
 
   @GetMapping("user/{userId}")
-  public UserDTO findUser(@PathVariable("userId") long userId) {
+  public UserWithGoalsDTO findUser(@PathVariable("userId") long userId) {
     return goalExternalAPI.findUserWithGoals(userId);
   }
 

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import net.szymonsawicki.net.habittracker.events.UserDeleteEvent;
+import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
 import net.szymonsawicki.net.habittracker.goalmagement.GoalInternalAPI;
 import net.szymonsawicki.net.habittracker.usermanagement.UserDTO;
 import net.szymonsawicki.net.habittracker.usermanagement.UserType;
@@ -45,7 +45,7 @@ public class UserModuleTest {
 
     scenario
         .stimulate(() -> userService.deleteWithRelatedData(userToDelete))
-        .andWaitForEventOfType(UserDeleteEvent.class)
+        .andWaitForEventOfType(UserDeletedEvent.class)
         .matching(event -> event.getId().equals(userToDelete))
         .toArriveAndVerify(
             event ->
