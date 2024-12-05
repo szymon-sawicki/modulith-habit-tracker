@@ -3,6 +3,7 @@ package net.szymonsawicki.net.habittracker.goalmagement.service;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.events.UserCreatedEvent;
@@ -83,7 +84,7 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
     var habitsForGoal = habitInternalAPI.findAllHabitsForGoal(goalId);
 
     if (!habitsForGoal.isEmpty()) {
-      goalDto.habits().addAll(habitsForGoal);
+      goalDto = goalDto.withHabits(habitsForGoal);
     }
 
     return goalDto;
@@ -92,14 +93,15 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
   @Override
   public List<GoalDTO> findGoalsForUser(long userId) {
 
-    if (userInternalAPI.existsById(userId)) throw new EntityNotFoundException("User not exists");
+    if (!userInternalAPI.existsById(userId)) throw new EntityNotFoundException("User not exists");
 
     var goalsForUser = goalMapper.toDtos(goalRepository.findByUserId(userId));
 
-    goalsForUser.forEach(
-        goal -> goal.habits().addAll(habitInternalAPI.findAllHabitsForGoal(goal.id())));
-
-    return goalsForUser;
+    return goalsForUser.stream()
+        .map(
+            goal ->
+                goal.withHabits(new ArrayList<>(habitInternalAPI.findAllHabitsForGoal(goal.id()))))
+        .collect(Collectors.toList());
   }
 
   @Override
