@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker.goalmagement.unit;
+package net.szymonsawicki.net.habittracker.goalmanagement.unit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import net.szymonsawicki.net.habittracker.events.UserCreatedEvent;
 import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
-import net.szymonsawicki.net.habittracker.goalmagement.*;
-import net.szymonsawicki.net.habittracker.goalmagement.mapper.GoalMapper;
-import net.szymonsawicki.net.habittracker.goalmagement.model.GoalEntity;
-import net.szymonsawicki.net.habittracker.goalmagement.repository.GoalRepository;
-import net.szymonsawicki.net.habittracker.goalmagement.service.GoalService;
+import net.szymonsawicki.net.habittracker.goalmanagement.*;
+import net.szymonsawicki.net.habittracker.goalmanagement.mapper.GoalMapper;
+import net.szymonsawicki.net.habittracker.goalmanagement.model.GoalEntity;
+import net.szymonsawicki.net.habittracker.goalmanagement.repository.GoalRepository;
+import net.szymonsawicki.net.habittracker.goalmanagement.service.GoalService;
 import net.szymonsawicki.net.habittracker.usermanagement.UserDTO;
 import net.szymonsawicki.net.habittracker.usermanagement.UserInternalAPI;
 import net.szymonsawicki.net.habittracker.usermanagement.UserType;

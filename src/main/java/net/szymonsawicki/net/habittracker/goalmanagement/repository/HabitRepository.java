@@ -1,7 +1,7 @@
-package net.szymonsawicki.net.habittracker.goalmagement.repository;
+package net.szymonsawicki.net.habittracker.goalmanagement.repository;
 
 import java.util.List;
-import net.szymonsawicki.net.habittracker.goalmagement.model.HabitEntity;
+import net.szymonsawicki.net.habittracker.goalmanagement.model.HabitEntity;
 import org.springframework.data.repository.CrudRepository;
 
 public interface HabitRepository extends CrudRepository<HabitEntity, Long> {

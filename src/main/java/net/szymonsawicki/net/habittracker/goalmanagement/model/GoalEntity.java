@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker.goalmagement.model;
+package net.szymonsawicki.net.habittracker.goalmanagement.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -6,17 +6,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "habits", schema = "goal_habit")
+@Table(name = "goals", schema = "goal_habit")
 @Getter
 @Setter
 @ToString
-public class HabitEntity {
+public class GoalEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private Long goalId;
   private Long userId;
   private String name;
   private String description;

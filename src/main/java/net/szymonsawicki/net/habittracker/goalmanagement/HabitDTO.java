@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker.goalmagement;
+package net.szymonsawicki.net.habittracker.goalmanagement;
 
 public record HabitDTO(
     Long id, Long goalId, Long userId, String name, String description, HabitPriority priority) {

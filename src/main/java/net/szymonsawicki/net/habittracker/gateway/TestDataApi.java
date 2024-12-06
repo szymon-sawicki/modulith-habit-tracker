@@ -2,11 +2,11 @@ package net.szymonsawicki.net.habittracker.gateway;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.szymonsawicki.net.habittracker.goalmagement.GoalDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.GoalExternalAPI;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitExternalAPI;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitPriority;
+import net.szymonsawicki.net.habittracker.goalmanagement.GoalDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.GoalExternalAPI;
+import net.szymonsawicki.net.habittracker.goalmanagement.HabitDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.HabitExternalAPI;
+import net.szymonsawicki.net.habittracker.goalmanagement.HabitPriority;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.usermanagement.UserDTO;
 import net.szymonsawicki.net.habittracker.usermanagement.UserExternalAPI;

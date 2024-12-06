@@ -2,7 +2,7 @@ package net.szymonsawicki.net.habittracker.gateway;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import net.szymonsawicki.net.habittracker.goalmagement.GoalExternalAPI;
+import net.szymonsawicki.net.habittracker.goalmanagement.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.usermanagement.UserExternalAPI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

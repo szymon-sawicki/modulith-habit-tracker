@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitInternalAPI;
+import net.szymonsawicki.net.habittracker.goalmanagement.HabitInternalAPI;
 import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerInternalApi;

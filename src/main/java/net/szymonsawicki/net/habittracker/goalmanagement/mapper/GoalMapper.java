@@ -1,10 +1,10 @@
-package net.szymonsawicki.net.habittracker.goalmagement.mapper;
+package net.szymonsawicki.net.habittracker.goalmanagement.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.szymonsawicki.net.habittracker.goalmagement.GoalDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.model.GoalEntity;
+import net.szymonsawicki.net.habittracker.goalmanagement.GoalDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.model.GoalEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

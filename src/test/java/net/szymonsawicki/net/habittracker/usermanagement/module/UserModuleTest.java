@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
-import net.szymonsawicki.net.habittracker.goalmagement.GoalInternalAPI;
+import net.szymonsawicki.net.habittracker.goalmanagement.GoalInternalAPI;
 import net.szymonsawicki.net.habittracker.usermanagement.UserDTO;
 import net.szymonsawicki.net.habittracker.usermanagement.UserType;
 import net.szymonsawicki.net.habittracker.usermanagement.repository.UserRepository;

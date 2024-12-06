@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker.goalmagement;
+package net.szymonsawicki.net.habittracker.goalmanagement;
 
 import java.util.ArrayList;
 import java.util.List;

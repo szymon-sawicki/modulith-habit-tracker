@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker.goalmagement;
+package net.szymonsawicki.net.habittracker.goalmanagement;
 
 public interface GoalExternalAPI {
   GoalDTO addGoal(GoalDTO goalDTO);

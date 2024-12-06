@@ -2,10 +2,10 @@ package net.szymonsawicki.net.habittracker.gateway;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import net.szymonsawicki.net.habittracker.goalmagement.*;
-import net.szymonsawicki.net.habittracker.goalmagement.GoalDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.UserWithGoalsDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.*;
+import net.szymonsawicki.net.habittracker.goalmanagement.GoalDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.HabitDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.UserWithGoalsDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitExecutionDTO;
 import net.szymonsawicki.net.habittracker.tracker.HabitTrackerExternalApi;
 import net.szymonsawicki.net.habittracker.tracker.UserTrackerDTO;

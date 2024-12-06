@@ -1,4 +1,4 @@
-package net.szymonsawicki.net.habittracker.goalmagement.service;
+package net.szymonsawicki.net.habittracker.goalmanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -8,12 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.events.UserCreatedEvent;
 import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
-import net.szymonsawicki.net.habittracker.goalmagement.*;
-import net.szymonsawicki.net.habittracker.goalmagement.GoalDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.UserWithGoalsDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.mapper.GoalMapper;
-import net.szymonsawicki.net.habittracker.goalmagement.model.GoalEntity;
-import net.szymonsawicki.net.habittracker.goalmagement.repository.GoalRepository;
+import net.szymonsawicki.net.habittracker.goalmanagement.*;
+import net.szymonsawicki.net.habittracker.goalmanagement.GoalDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.UserWithGoalsDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.mapper.GoalMapper;
+import net.szymonsawicki.net.habittracker.goalmanagement.model.GoalEntity;
+import net.szymonsawicki.net.habittracker.goalmanagement.repository.GoalRepository;
 import net.szymonsawicki.net.habittracker.usermanagement.UserInternalAPI;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;

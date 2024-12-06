@@ -1,17 +1,17 @@
-package net.szymonsawicki.net.habittracker.goalmagement.service;
+package net.szymonsawicki.net.habittracker.goalmanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.szymonsawicki.net.habittracker.events.UserDeletedEvent;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitDTO;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitExternalAPI;
-import net.szymonsawicki.net.habittracker.goalmagement.HabitInternalAPI;
-import net.szymonsawicki.net.habittracker.goalmagement.mapper.HabitMapper;
-import net.szymonsawicki.net.habittracker.goalmagement.model.HabitEntity;
-import net.szymonsawicki.net.habittracker.goalmagement.repository.GoalRepository;
-import net.szymonsawicki.net.habittracker.goalmagement.repository.HabitRepository;
+import net.szymonsawicki.net.habittracker.goalmanagement.HabitDTO;
+import net.szymonsawicki.net.habittracker.goalmanagement.HabitExternalAPI;
+import net.szymonsawicki.net.habittracker.goalmanagement.HabitInternalAPI;
+import net.szymonsawicki.net.habittracker.goalmanagement.mapper.HabitMapper;
+import net.szymonsawicki.net.habittracker.goalmanagement.model.HabitEntity;
+import net.szymonsawicki.net.habittracker.goalmanagement.repository.GoalRepository;
+import net.szymonsawicki.net.habittracker.goalmanagement.repository.HabitRepository;
 import net.szymonsawicki.net.habittracker.usermanagement.UserInternalAPI;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
