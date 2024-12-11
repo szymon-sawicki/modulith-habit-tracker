@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import net.szymonsawicki.net.habittracker.goalmanagement.GoalExternalAPI;
 import net.szymonsawicki.net.habittracker.usermanagement.UserExternalAPI;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,26 +18,23 @@ public class GatewayIntegrationTests {
   @Autowired private UserExternalAPI userExternalAPI;
   @Autowired private GoalExternalAPI goalExternalAPI;
 
-  @BeforeEach
-  public void loadDataIntoDb() {
+  @Test
+  void shouldReturnUserWithGoalsAndHabits() {
+
+    // given
+    var response = testRestTemplate.postForEntity("/test-data/", null, String.class);
 
     // when
-    var response = testRestTemplate.postForEntity("/test-data/", null, String.class);
+    var firstUserId = userExternalAPI.findAllUsers().getFirst().id();
+    var userWithGoals = goalExternalAPI.findUserWithGoals(firstUserId);
 
     // then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
-  }
 
-  @Test
-  void shouldReturnUserWithGoalsAndHabits() {
-
-    var firstUserId = userExternalAPI.findAllUsers().getFirst().id();
-    var userWithGoals = goalExternalAPI.findUserWithGoals(firstUserId);
-
-    /*    assertThat(userWithGoals).isNotNull();
-    assertThat(userWithGoals.goals()).isNotNull();
-    assertThat(userWithGoals.goals().size()).isEqualTo(1);
-    assertThat(userWithGoals.goals().getFirst().habits().size()).isEqualTo(1);*/
+    assertThat(userWithGoals).isNotNull();
+    assertThat(userWithGoals.userGoals()).isNotNull();
+    assertThat(userWithGoals.userGoals().size()).isEqualTo(1);
+    assertThat(userWithGoals.userGoals().getFirst().habits().size()).isEqualTo(1);
   }
 }

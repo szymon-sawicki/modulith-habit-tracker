@@ -49,7 +49,13 @@ public class GoalService implements GoalInternalAPI, GoalExternalAPI {
     if (!goalsForUser.isEmpty()) {
       userWithGoals.userGoals().addAll(goalMapper.toDtos(goalsForUser));
     }
-    return userWithGoals;
+
+    var goalsWithHabits =
+        userWithGoals.userGoals().stream()
+            .map(goal -> goal.withHabits(habitInternalAPI.findAllHabitsForGoal(goal.id())))
+            .toList();
+
+    return userWithGoals.withGoals(goalsWithHabits);
   }
 
   @ApplicationModuleListener

@@ -84,25 +84,4 @@ public class UserModuleTest {
     // when & then
     assertThatThrownBy(() -> userService.addUser(user)).isInstanceOf(UserServiceException.class);
   }
-  /*
-  @Test
-  @Order(4)
-  void shouldFindUserWithGoalsAndHabits(Scenario scenario) {
-    // given
-    UserDTO newUser =
-        new UserDTO(null, "userWithGoals", "User With Goals", UserType.USER, new ArrayList<>());
-    UserDTO savedUser = userService.addUser(newUser);
-    List<GoalDTO> mockGoals = TestDataFactory.createTestGoalDtosForUser(savedUser.id(), 3);
-
-    when(goalInternalAPI.findGoalsForUser(savedUser.id()))
-        .thenReturn(TestDataFactory.createTestGoalDtosForUser(savedUser.id(), 3));
-
-    // when
-    var resultingUser = userService.findUserWithGoals(savedUser.id());
-
-    // then
-    assertThat(resultingUser.id()).isEqualTo(savedUser.id());
-    assertThat(resultingUser.goals()).hasSize(3);
-    assertThat(resultingUser.goals()).containsAll(mockGoals);
-  }*/
 }
