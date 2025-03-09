@@ -1,0 +1,6 @@
+{
+  "username": "{{username}}",
+  "password": "StrngPass123.",
+  "userType": "USER",
+  "userGoals": ["swimming","running"]
+}

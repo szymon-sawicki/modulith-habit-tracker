@@ -1,5 +1,7 @@
 package net.szymonsawicki.net.habittracker.usermanagement;
 
+import java.util.ArrayList;
+
 public record UserDTO(
     Long id,
     String username,
